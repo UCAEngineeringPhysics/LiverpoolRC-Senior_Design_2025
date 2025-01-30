@@ -1,18 +1,24 @@
-from math import floor
+import numpy as np
 from adafruit_rplidar import RPLidar
 
 # Setup the RPLidar
-PORT_NAME = '/dev/ttyUSB0'
+PORT_NAME = "/dev/ttyUSB0"
 lidar = RPLidar(None, PORT_NAME, timeout=3)
+scan_arr = np.zeros(360)
+
+
+def process_scan(raw_scan):
+    for _, angle, distance in raw_scan:
+        scan_arr[int(angle)] = distance
+    return scan_arr
+
 
 try:
     for scan in lidar.iter_scans():
-        for (_, angle, distance) in scan:
-            if floor(angle) == 180:  # print distance at angle 180
-                print(f"Distance at 180°: {distance}")
-                break  
+        scan_data = process_scan(scan)
+        print(scan_data[180])
 except KeyboardInterrupt:
-    print('Stopping.')
+    print("Stopping.")
 finally:
     lidar.stop()
     lidar.disconnect()
