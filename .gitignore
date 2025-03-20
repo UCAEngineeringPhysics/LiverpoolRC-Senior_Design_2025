@@ -181,3 +181,6 @@ log/
 # Micro-Pico
 .micropico
 *.json
+
+# FreeCAD
+*.FCBak
